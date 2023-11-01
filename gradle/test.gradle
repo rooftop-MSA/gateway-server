@@ -1,0 +1,15 @@
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '19'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '19'
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
