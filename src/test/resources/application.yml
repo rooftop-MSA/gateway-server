@@ -1,0 +1,6 @@
+rooftop:
+  server:
+    identity:
+      host: localhost:8080
+      url: http://localhost:8081
+      default-url: /v1/users
