@@ -2,3 +2,11 @@ spring:
   server:
     name: rooftop-gateway
     port: 8080
+
+rooftop:
+  server:
+    identity:
+      host:
+      url:
+      default-url: /v1/users
+
