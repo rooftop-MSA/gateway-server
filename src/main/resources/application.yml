@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: product
   server:
     name: rooftop-gateway
     port: 8080

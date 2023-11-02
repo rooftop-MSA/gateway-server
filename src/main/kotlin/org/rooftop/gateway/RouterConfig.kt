@@ -1,53 +1,30 @@
 package org.rooftop.gateway
 
-import org.springframework.beans.factory.annotation.Value
+import org.rooftop.gateway.api.IdentityApiSpec
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod.*
 
 @Configuration
-internal class RouterConfig(
-    @Value("\${rooftop.server.identity.host}") private val identityHost: String,
-    @Value("\${rooftop.server.identity.url}") private val identityUrl: String,
-    @Value("\${rooftop.server.identity.default-url}") private val defaultUrl: String,
-) {
+internal class RouterConfig {
     @Bean
     internal fun gateways(routeLocatorBuilder: RouteLocatorBuilder): RouteLocator {
         return routeLocatorBuilder.routes()
-            .route("identity#create-user") {
-                it.method(POST)
-                    .and().host(identityHost)
-                    .and().path(defaultUrl)
-                    .uri(identityUrl)
+            .route(IdentityApiSpec.CREATE_USER.routerName) {
+                IdentityApiSpec.CREATE_USER.route(it)
             }
-            .route("identity#login") {
-                it.method(POST)
-                    .and().host(identityHost)
-                    .and().path("/v1/logins")
-                    .uri(identityUrl)
+            .route(IdentityApiSpec.LOGIN.routerName) {
+                IdentityApiSpec.LOGIN.route(it)
             }
-            .route("identity#find-user-by-name") {
-                it.method(GET)
-                    .and().host(identityHost)
-                    .and().path(defaultUrl)
-                    .and().query("name")
-                    .uri(identityUrl)
+            .route(IdentityApiSpec.FIND_USER_BY_NAME.routerName) {
+                IdentityApiSpec.FIND_USER_BY_NAME.route(it)
             }
-            .route("identity#update-user") {
-                it.method(PUT)
-                    .and().host(identityHost)
-                    .and().path(defaultUrl)
-                    .filters { it }
-                    .uri(identityUrl)
+            .route(IdentityApiSpec.UPDATE_USER.routerName) {
+                IdentityApiSpec.UPDATE_USER.route(it)
             }
-            .route("identity#delete-user") {
-                it.method(DELETE)
-                    .and().host(identityHost)
-                    .and().path(defaultUrl)
-                    .filters { it }
-                    .uri(identityUrl)
+            .route(IdentityApiSpec.DELETE_USER.routerName) {
+                IdentityApiSpec.DELETE_USER.route(it)
             }
             .build()
     }
