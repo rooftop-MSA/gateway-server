@@ -14,10 +14,6 @@ internal class RestAuthenticator(
     @Value("\${rooftop.server.identity.url}") private val upStreamUrl: String,
 ) : Authenticator {
 
-    init {
-        println(">>> $upStreamUrl")
-    }
-
     override fun auth(token: String, requesterId: Long): Mono<HttpStatus> {
         return WebClient.create(upStreamUrl).get()
             .exchangeToMono { Mono.just(it.statusCode()) }
