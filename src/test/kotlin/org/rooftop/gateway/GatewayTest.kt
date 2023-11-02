@@ -10,10 +10,13 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.*
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.DefaultUriBuilderFactory
 
 @AutoConfigureWireMock(port = 8081)
+@ContextConfiguration(classes = [TestConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 internal class GatewayTest(
     private val wireMockServer: WireMockServer,
@@ -49,6 +52,10 @@ internal class GatewayTest(
 
             it.headers.forEach { (header, value) -> client.header(header, value) }
 
+            it.body?.let { body ->
+                client.bodyValue(body)
+            }
+
             client.exchange()
                 .expectStatus().isEqualTo(ROUTE_SUCCEED_STATUS)
                 .expectHeader().valueEquals(routeSucceedHeader.first, routeSucceedHeader.second)
@@ -75,13 +82,18 @@ internal class GatewayTest(
                 IDENTITY_SERVER_HOST,
                 "/v1/users",
                 headers = mapOf(HttpHeaders.AUTHORIZATION to "jwt.jwt.jwt"),
-                description = "update user"
+                description = "update user",
+                body = """
+                    {
+                        "id": "1"
+                    }
+                """.trimIndent()
             ),
             Api(
                 DELETE,
                 IDENTITY_SERVER_HOST,
                 "/v1/users",
-                headers = mapOf(HttpHeaders.AUTHORIZATION to "jwt.jwt.jwt"),
+                headers = mapOf(HttpHeaders.AUTHORIZATION to "jwt.jwt.jwt", "id" to "1"),
                 description = "delete user"
             ),
         )
@@ -94,5 +106,6 @@ internal class GatewayTest(
         val param: String = "",
         val headers: Map<String, String> = mapOf(),
         val description: String = "",
+        val body: String? = null,
     )
 }
