@@ -1,9 +1,10 @@
+server:
+  name: rooftop-gateway
+  port: 80
+
 spring:
   profiles:
     active: product
-  server:
-    name: rooftop-gateway
-    port: 80
 
 rooftop:
   server:
