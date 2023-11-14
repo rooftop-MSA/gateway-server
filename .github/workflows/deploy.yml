@@ -83,5 +83,5 @@ jobs:
         run: |
           sudo docker pull ghcr.io/rooftop-msa/gateway:${{ steps.extract_version_name.outputs.version }}
           sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
-          sudo docker run -d -p 8080:8080 --cpus 4 --memory 4G ghcr.io/rooftop-msa/gateway:${{ steps.extract_version_name.outputs.version }}
+          sudo docker run -d -p 80:80 --cpus 4 --memory 4G ghcr.io/rooftop-msa/gateway:${{ steps.extract_version_name.outputs.version }}
 
