@@ -15,8 +15,16 @@ internal class RestAuthenticator(
 ) : Authenticator {
 
     override fun auth(token: String, requesterId: Long): Mono<HttpStatus> {
-        return WebClient.create(upStreamUrl).get()
+        return WebClient.create("$upStreamUrl$AUTH_PATH").get()
+            .headers { header ->
+                header["Authorization"] = token
+                header["RequesterId"] = requesterId.toString()
+            }
             .exchangeToMono { Mono.just(it.statusCode()) }
             .map { HttpStatus.valueOf(it.value()) }
+    }
+
+    companion object {
+        private const val AUTH_PATH = "/v1/auths"
     }
 }
