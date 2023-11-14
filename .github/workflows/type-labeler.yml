@@ -68,3 +68,8 @@ jobs:
         with:
           labels: 💪 perf
 
+      - name: add 🔖 release label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ startsWith(github.event.pull_request.title, 'release:') }}
+        with:
+          labels: 🔖 release
