@@ -5,6 +5,7 @@ plugins {
     id 'org.springframework.boot' version "${springbootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
     id 'org.sonarqube' version "${sonarcloudVersion}"
+    id "com.google.protobuf" version "${protobufPluginVersion}"
 }
 
 group = "${group}"
@@ -21,3 +22,4 @@ application {
 apply from: 'gradle/test.gradle'
 apply from: 'gradle/spring.gradle'
 apply from: 'gradle/sonar.gradle'
+apply from: "gradle/protobuf.gradle"
