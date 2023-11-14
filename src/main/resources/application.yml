@@ -3,12 +3,12 @@ spring:
     active: product
   server:
     name: rooftop-gateway
-    port: 8080
+    port: 80
 
 rooftop:
   server:
     identity:
-      host:
-      url:
+      host: identity.rooftopmsa.org
+      url: http://192.168.35.190
       default-url: /v1/users
 

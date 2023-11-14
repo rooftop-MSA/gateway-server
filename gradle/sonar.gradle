@@ -1,7 +1,7 @@
 sonar {
     properties {
-        property "sonar.projectKey", "rooftop-MSA_gateway-server"
-        property "sonar.organization", "rooftop-msa"
-        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectKey", "${sonarProjectKey}"
+        property "sonar.organization", "${sonarOrganization}"
+        property "sonar.host.url", "${sonarHostUrl}"
     }
 }
