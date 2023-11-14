@@ -9,6 +9,6 @@ rooftop:
   server:
     identity:
       host: identity.rooftopmsa.org
-      url: http://192.168.35.190
+      url: http://192.168.35.190:8080
       default-url: /v1/users
 
