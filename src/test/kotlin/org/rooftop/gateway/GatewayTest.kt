@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
+import org.rooftop.api.identity.userUpdateReq
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
@@ -11,7 +12,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.*
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.DefaultUriBuilderFactory
 
@@ -81,13 +81,16 @@ internal class GatewayTest(
                 PUT,
                 IDENTITY_SERVER_HOST,
                 "/v1/users",
-                headers = mapOf(HttpHeaders.AUTHORIZATION to "jwt.jwt.jwt"),
+                headers = mapOf(
+                    HttpHeaders.AUTHORIZATION to "jwt.jwt.jwt",
+                    HttpHeaders.CONTENT_TYPE to "application/x-protobuf"
+                ),
                 description = "update user",
-                body = """
-                    {
-                        "id": "1"
-                    }
-                """.trimIndent()
+                body = userUpdateReq {
+                    id = 1
+                    newName = "newName"
+                    newPassword = "newPassword"
+                }.toByteArray()
             ),
             Api(
                 DELETE,
@@ -106,6 +109,6 @@ internal class GatewayTest(
         val param: String = "",
         val headers: Map<String, String> = mapOf(),
         val description: String = "",
-        val body: String? = null,
+        val body: ByteArray? = null,
     )
 }

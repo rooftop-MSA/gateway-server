@@ -1,7 +1,6 @@
 package org.rooftop.gateway.api
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import org.rooftop.api.identity.UserUpdateReq
 import org.rooftop.gateway.PreAuthGatewayFilterFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.gateway.route.Route
@@ -15,9 +14,7 @@ private lateinit var baseUrl: String
 private lateinit var identityHost: String
 private lateinit var identityUrl: String
 private lateinit var preAuthFilter: PreAuthGatewayFilterFactory
-private lateinit var mapper: ObjectMapper
 private val notExistCachedBodyException = IllegalArgumentException("Not exist cached body")
-private val notExistCachedIdException = IllegalArgumentException("Not exist cached id")
 private val notExistIdHeaderException = IllegalArgumentException("Not exist header named id")
 
 internal enum class IdentityApiSpec(
@@ -52,21 +49,18 @@ internal enum class IdentityApiSpec(
             .and().host(identityHost)
             .and().path(baseUrl)
             .filters { filterSpec ->
-                filterSpec.cacheRequestBody(String::class.java)
+                filterSpec.cacheRequestBody(ByteArray::class.java)
                 filterSpec.filter(
                     preAuthFilter.apply(
                         PreAuthGatewayFilterFactory.Config { exchange ->
-                            val cachedBody: String =
+                            val cachedBody: ByteArray =
                                 exchange.attributes[CACHED_REQUEST_BODY_ATTR].let {
-                                    if (it is String) {
+                                    if (it is ByteArray) {
                                         return@let it
                                     }
                                     throw notExistCachedBodyException
                                 }
-
-                            mapper.readValue(cachedBody,
-                                object : TypeReference<Map<String, String>>() {})["id"]?.toLong()
-                                ?: throw notExistCachedIdException
+                            UserUpdateReq.parseFrom(cachedBody).id
                         }
                     )
                 )
@@ -101,14 +95,12 @@ internal enum class IdentityApiSpec(
 @Component
 class IdentitySpecApplier(
     authFilter: PreAuthGatewayFilterFactory,
-    objectMapper: ObjectMapper,
     @Value("\${rooftop.server.identity.host}") host: String,
     @Value("\${rooftop.server.identity.url}") url: String,
     @Value("\${rooftop.server.identity.default-url}") defaultUrl: String,
 ) {
     init {
         preAuthFilter = authFilter
-        mapper = objectMapper
         identityHost = host
         identityUrl = url
         baseUrl = defaultUrl
