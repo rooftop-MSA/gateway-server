@@ -5,6 +5,8 @@ server:
 spring:
   profiles:
     active: product
+  application:
+    name: rooftop-gateway
 
 rooftop:
   server:
@@ -13,3 +15,11 @@ rooftop:
       url: http://192.168.35.190:8080
       default-url: /v1/users
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
